@@ -1,0 +1,24 @@
+var roleFiller = {
+
+    /** @param {Creep} creep **/
+    run: function(creep) {
+        if(creep.carry.energy < creep.carryCapacity) {
+            var source = creep.pos.findClosestByPath(FIND_SOURCES);
+            if(creep.harvest(source) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(creep.room.find(FIND_FLAGS)[1]);
+            }
+        }
+        else {
+            var target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+                    filter: (structure) => {
+                        return (structure.structureType == STRUCTURE_CONTAINER);
+                    }
+            });
+            if(target) {
+                creep.transfer(target, RESOURCE_ENERGY);
+            }
+        }
+    }
+};
+
+module.exports = roleFiller;
