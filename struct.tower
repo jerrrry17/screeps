@@ -1,0 +1,42 @@
+var structTower = {
+
+    /** @param {Structure} tower **/
+    run: function(tower) {
+        var closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+        if(closestHostile) {
+            tower.attack(closestHostile);
+        }
+	    var closestHighlyDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
+            filter: (structure) => {
+                        return ((structure.structureType != STRUCTURE_WALL && structure.hits < 0.3 * structure.hitsMax) ||
+                                (structure.structureType == STRUCTURE_RAMPART && structure.hitsMax > 1 && structure.hits < 2000) ||
+                                (structure.structureType == STRUCTURE_WALL && structure.hitsMax > 1 && structure.hits < 2000));
+                    }
+        });
+        if(closestHighlyDamagedStructure) {
+            tower.repair(closestHighlyDamagedStructure);
+        }
+	    var closestModeratelyDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
+            filter: (structure) => {
+                        return ((structure.structureType != STRUCTURE_WALL && structure.hits < 0.5 * structure.hitsMax) ||
+                                (structure.structureType == STRUCTURE_RAMPART && structure.hitsMax > 1 && structure.hits < 20000) ||
+                                (structure.structureType == STRUCTURE_WALL && structure.hitsMax > 1 && structure.hits < 20000));
+                    }
+        });
+        if(closestModeratelyDamagedStructure) {
+            tower.repair(closestModeratelyDamagedStructure);
+        }
+	    var closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
+            filter: (structure) => {
+                        return ((structure.structureType != STRUCTURE_WALL && structure.hits < 0.9 * structure.hitsMax) ||
+                                (structure.structureType == STRUCTURE_RAMPART && structure.hitsMax > 1 && structure.hits < 100000) ||
+                                (structure.structureType == STRUCTURE_WALL && structure.hitsMax > 1 && structure.hits < 100000));
+                    }
+        });
+        if(closestDamagedStructure) {
+            tower.repair(closestDamagedStructure);
+        }
+    }
+};
+
+module.exports = structTower;
