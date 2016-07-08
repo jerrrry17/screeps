@@ -1,0 +1,22 @@
+var utilPop = {
+    
+    minBuilders: 2,
+    minFillers: 2,
+    minHarvesters: 0,
+    minLoaders: 1,
+    minRangers: 2,
+    minRepairmen: 2,
+    minRunners: 4,
+    minUpgraders: 4,
+    
+    builderConfig: [WORK,WORK,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE],
+    fillerConfig: [WORK,WORK,WORK,WORK,CARRY,MOVE,MOVE,MOVE],
+    harvesterConfig: [WORK,CARRY,MOVE],
+    loaderConfig: [CARRY,CARRY,MOVE,MOVE],
+    rangerConfig: [RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,MOVE,MOVE],
+    repairmanConfig: [WORK,WORK,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE],
+    runnerConfig: [CARRY,MOVE],
+    upgraderConfig: [WORK,WORK,WORK,WORK,CARRY,CARRY,MOVE,MOVE,MOVE]
+};
+
+module.exports = utilPop;
