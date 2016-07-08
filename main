@@ -1,0 +1,110 @@
+var roleBuilder = require('role.builder');
+var roleFiller = require('role.filler');
+var roleHarvester = require('role.harvester');
+var roleLoader = require('role.loader');
+var roleRanger = require('role.ranger');
+var roleRepairman = require('role.repairman');
+var roleRunner = require('role.runner');
+var roleUpgrader = require('role.upgrader');
+var structTower = require('struct.tower');
+var utilInfo = require('util.info');
+var utilPop = require('util.population');
+
+module.exports.loop = function () {
+    
+    // Always place this memory cleaning code at the very top of your main loop!
+    utilInfo.cleanCreepMemory();
+    
+    var builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
+    var fillers = _.filter(Game.creeps, (creep) => creep.memory.role == 'filler');
+    var harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester');
+    var loaders = _.filter(Game.creeps, (creep) => creep.memory.role == 'loader');
+    var rangers = _.filter(Game.creeps, (creep) => creep.memory.role == 'ranger');
+    var repairmen = _.filter(Game.creeps, (creep) => creep.memory.role == 'repairman');
+    var runners = _.filter(Game.creeps, (creep) => creep.memory.role == 'runner');
+    var upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader');
+    
+    if (Game.time % 60 == 0) {
+        var availableEnergy = _.filter(Game.rooms, (room) => room != undefined)[0].energyAvailable;
+        var totalEnergy = _.filter(Game.rooms, (room) => room != undefined)[0].energyCapacityAvailable;
+        
+        console.log('Available Energy: ' + availableEnergy + '/' + totalEnergy);
+        console.log('Total creeps: ' + _.filter(Game.creeps, (creep) => creep != undefined).length);
+        console.log('Builders: ' + builders.length + '/' + utilPop.minBuilders + 
+                    ', Fillers: ' + fillers.length + '/' + utilPop.minFillers + 
+                    ', Harvesters: ' + harvesters.length + '/' + utilPop.minHarvesters + 
+                    ', Loaders: ' + loaders.length + '/' + utilPop.minLoaders + 
+                    ', Rangers: ' + rangers.length + '/' + utilPop.minRangers + 
+                    ', Repairmen: ' + repairmen.length + '/' + utilPop.minRepairmen + 
+                    ', Runners: ' + runners.length + '/' + utilPop.minRunners +
+                    ', Upgraders: ' + upgraders.length + '/' + utilPop.minUpgraders);
+    }
+
+    if (Game.time % 10 == 0) {
+        if (fillers.length < utilPop.minFillers) {
+            var newName = Game.spawns.Spawn1.createCreep(utilPop.fillerConfig, undefined, {role: 'filler'});
+            console.log('Spawning new filler: ' + newName);
+        }
+        else if (runners.length < utilPop.minRunners) {
+            var newName = Game.spawns.Spawn1.createCreep(utilPop.runnerConfig, undefined, {role: 'runner'});
+            console.log('Spawning new runner: ' + newName);
+        }
+        else if (loaders.length < utilPop.minLoaders) {
+            var newName = Game.spawns.Spawn1.createCreep(utilPop.loaderConfig, undefined, {role: 'loader'});
+            console.log('Spawning new loader: ' + newName);
+        }
+        else if (harvesters.length < utilPop.minHarvesters) {
+            var newName = Game.spawns.Spawn1.createCreep(utilPop.harvesterConfig, undefined, {role: 'harvester'});
+            console.log('Spawning new harvester: ' + newName);
+        }
+        else if(upgraders.length < utilPop.minUpgraders) {
+            var newName = Game.spawns.Spawn1.createCreep(utilPop.upgraderConfig, undefined, {role: 'upgrader'});
+            console.log('Spawning new upgrader: ' + newName);
+        }
+        else if(repairmen.length < utilPop.minRepairmen) {
+            var newName = Game.spawns.Spawn1.createCreep(utilPop.repairmanConfig, undefined, {role: 'repairman'});
+            console.log('Spawning new repairman: ' + newName);
+        }
+        else if(builders.length < utilPop.minBuilders) {
+            var newName = Game.spawns.Spawn1.createCreep(utilPop.builderConfig, undefined, {role: 'builder'});
+            console.log('Spawning new builder: ' + newName);
+        }
+        else if (rangers.length < utilPop.minRangers) {
+            var newName = Game.spawns.Spawn1.createCreep(utilPop.rangerConfig, undefined, {role: 'ranger'});
+            console.log('Spawning new ranger: ' + newName);
+        }
+    }
+    
+    //run tower
+    structTower.run(Game.getObjectById('577e582f51e62e4e1a8a88c1'));
+
+    for(var name in Game.creeps) {
+        var creep = Game.creeps[name];
+        switch(creep.memory.role) {
+            case 'builder':
+                roleBuilder.run(creep);
+                break;
+            case 'filler':
+                roleFiller.run(creep);
+                break;
+            case 'harvester':
+                roleHarvester.run(creep);
+                break;
+            case 'loader':
+                roleLoader.run(creep);
+                break;
+            case 'ranger':
+                roleRanger.run(creep);
+                break;
+            case 'repairman':
+                roleRepairman.run(creep);
+                break;
+            case 'runner':
+                roleRunner.run(creep);
+                break;
+            case 'upgrader':
+                roleUpgrader.run(creep);
+                break;
+        }
+    }
+}
