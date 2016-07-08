@@ -1,0 +1,55 @@
+var roleRepairman = {
+
+    /** @param {Creep} creep **/
+    run: function(creep) {
+	    if(creep.memory.repairing && creep.carry.energy == 0) {
+            creep.memory.repairing = false;
+	    }
+	    if(!creep.memory.repairing && creep.carry.energy == creep.carryCapacity) {
+	        creep.memory.repairing = true;
+	    }
+
+	    if(creep.memory.repairing) {
+	        //Don't bother repairing anything close to full health
+	        var targets = creep.room.find(FIND_STRUCTURES, {
+                    filter: (structure) => {
+                        return ((structure.structureType != STRUCTURE_WALL && structure.hits < 0.9 * structure.hitsMax) ||
+                                (structure.structureType == STRUCTURE_RAMPART && structure.hitsMax > 1 && structure.hits < 100000) ||
+                                (structure.structureType == STRUCTURE_WALL && structure.hitsMax > 1 && structure.hits < 100000));
+                    }
+                });
+            if(targets.length) {
+                //prioritize structures with more damage
+                var highPriorityTargets = creep.room.find(FIND_STRUCTURES, {
+                    filter: (structure) => {
+                        return ((structure.structureType != STRUCTURE_WALL && structure.structureType != STRUCTURE_RAMPART && structure.hits < 0.3 * structure.hitsMax) ||
+                                (structure.structureType == STRUCTURE_RAMPART && structure.hitsMax > 1 && structure.hits < 20000) ||
+                                (structure.structureType == STRUCTURE_WALL && structure.hitsMax > 1 && structure.hits < 20000));
+                    }
+                });
+                if (highPriorityTargets.length) {
+                    if(creep.repair(highPriorityTargets[0]) == ERR_NOT_IN_RANGE) {
+                        creep.moveTo(highPriorityTargets[0]);
+                    }
+                }
+                else if(creep.repair(targets[0]) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(targets[0]);
+                }
+            }
+	    }
+	    else {
+	        var source = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+                    filter: (structure) => {
+                        return (structure.structureType == STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] >= 50);
+                    }
+            });
+            if (source) {
+                if(source.transfer(creep,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(source);
+                }
+            }
+	    }
+	}
+};
+
+module.exports = roleRepairman;
