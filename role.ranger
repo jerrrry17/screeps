@@ -1,0 +1,17 @@
+var roleRanger = {
+
+    /** @param {Creep} creep **/
+    run: function(creep) {
+	    var hostiles = creep.room.find(FIND_HOSTILE_CREEPS);
+        if(hostiles[0]) {
+            if(creep.rangedAttack(hostiles[0]) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(hostiles[0]);
+            }
+        }
+        else {
+            creep.moveTo(creep.room.find(FIND_FLAGS)[0]);
+        }
+    }
+};
+
+module.exports = roleRanger;
