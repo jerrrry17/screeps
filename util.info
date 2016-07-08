@@ -1,0 +1,37 @@
+var utilPop = require('util.population');
+
+var utilInfo = {
+    
+    showState: function() {
+	    var harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester');
+        var builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
+        var upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader');
+        var repairmen = _.filter(Game.creeps, (creep) => creep.memory.role == 'repairman');
+        var rangers = _.filter(Game.creeps, (creep) => creep.memory.role == 'ranger'); 
+        var runners = _.filter(Game.creeps, (creep) => creep.memory.role == 'runner'); 
+        
+        var availableEnergy = _.filter(Game.rooms, (room) => room != undefined)[0].energyAvailable;
+        var totalEnergy = _.filter(Game.rooms, (room) => room != undefined)[0].energyCapacityAvailable;
+
+        console.log('Available Energy: ' + availableEnergy + '/' + totalEnergy);
+        console.log('Total creeps: ' + _.filter(Game.creeps, (creep) => creep != undefined).length);
+        console.log('Harvesters: ' + harvesters.length + '/' + utilPop.minHarvesters + 
+                    ', Builder: ' + builders.length + '/' + utilPop.minBuilders + 
+                    ', Upgraders: ' + upgraders.length + '/' + utilPop.minUpgraders + 
+                    ', Repairmen: ' + repairmen.length + '/' + utilPop.minRepairmen + 
+                    ', Rangers: ' + rangers.length + '/' + utilPop.minRangers + 
+                    ', Runners: ' + runners.length + '/' + utilPop.minRunners);
+	},
+	
+	// Always place this memory cleaning code at the very top of your main loop!
+	 cleanCreepMemory: function() {
+        for(var name in Memory.creeps) {
+            if(!Game.creeps[name]) {
+                delete Memory.creeps[name];
+                console.log('Clearing non-existing creep memory:', name);
+            }
+        }
+    }
+};
+
+module.exports = utilInfo;
